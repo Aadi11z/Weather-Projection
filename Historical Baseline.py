@@ -6,7 +6,7 @@ import numpy as np
 
 # 1. Define the Timeframe
 start_year = 1950
-end_year = 1989
+end_year = 2014
 
 # 2. Define the Location (The optimized UAE bounding box)
 # This perfectly matches the 17x17 ERA5 grid and 3x3 MIROC6 grid

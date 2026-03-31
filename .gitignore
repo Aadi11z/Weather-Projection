@@ -5,3 +5,4 @@
 /project_specification.md
 /test_dims.py
 *.nc
+*.csv
