@@ -135,6 +135,21 @@ print("=" * 60)
 
 analyzer = ClimateTrendAnalyzer()
 
+# Latitude/Longitude tick labels for the 17x17 UAE grid
+_LAT_TICKS = [0, 4, 8, 12, 16]
+_LAT_LABELS = ['22.0°N', '23.0°N', '24.0°N', '25.0°N', '26.0°N']
+_LON_TICKS = [0, 4, 8, 12, 16]
+_LON_LABELS = ['52.0°E', '53.0°E', '54.0°E', '55.0°E', '56.0°E']
+
+def _apply_geo_axes(ax):
+    """Apply geographic tick labels to a 17x17 heatmap axis."""
+    ax.set_yticks(_LAT_TICKS)
+    ax.set_yticklabels(_LAT_LABELS)
+    ax.set_xticks(_LON_TICKS)
+    ax.set_xticklabels(_LON_LABELS)
+    ax.set_ylabel('Latitude')
+    ax.set_xlabel('Longitude')
+
 years_per_date = [d.year for d in prediction_dates]
 unique_years = sorted(set(years_per_date))
 print(f"  Year range: {unique_years[0]} - {unique_years[-1]} ({len(unique_years)} years)")
@@ -159,12 +174,14 @@ annual_temp, year_list = build_annual_cube(uhi_adjusted, prediction_dates, agg='
 z_temp, p_temp = analyzer.analyze_spatial_grid(annual_temp)
 
 fig, axes = plt.subplots(1, 2, figsize=(14, 5))
-im1 = axes[0].imshow(z_temp, cmap='RdBu_r', aspect='auto')
+im1 = axes[0].imshow(z_temp, cmap='RdBu_r', aspect='auto', origin='lower')
 axes[0].set_title('Temperature Z-statistic (MK Test)')
+_apply_geo_axes(axes[0])
 plt.colorbar(im1, ax=axes[0], label='Z-stat')
 
-im2 = axes[1].imshow(p_temp, cmap='YlOrRd_r', aspect='auto', vmin=0, vmax=0.1)
+im2 = axes[1].imshow(p_temp, cmap='YlOrRd_r', aspect='auto', vmin=0, vmax=0.1, origin='lower')
 axes[1].set_title('Temperature p-value (MK Test)')
+_apply_geo_axes(axes[1])
 plt.colorbar(im2, ax=axes[1], label='p-value')
 
 plt.tight_layout()
@@ -190,12 +207,14 @@ annual_pcp, _ = build_annual_cube(pcp_grids, prediction_dates, agg='sum')
 z_pcp, p_pcp = analyzer.analyze_spatial_grid(annual_pcp)
 
 fig, axes = plt.subplots(1, 2, figsize=(14, 5))
-im1 = axes[0].imshow(z_pcp, cmap='BrBG', aspect='auto')
+im1 = axes[0].imshow(z_pcp, cmap='BrBG', aspect='auto', origin='lower')
 axes[0].set_title('Precipitation Z-statistic (MK Test)')
+_apply_geo_axes(axes[0])
 plt.colorbar(im1, ax=axes[0], label='Z-stat')
 
-im2 = axes[1].imshow(p_pcp, cmap='YlOrRd_r', aspect='auto', vmin=0, vmax=0.1)
+im2 = axes[1].imshow(p_pcp, cmap='YlOrRd_r', aspect='auto', vmin=0, vmax=0.1, origin='lower')
 axes[1].set_title('Precipitation p-value (MK Test)')
+_apply_geo_axes(axes[1])
 plt.colorbar(im2, ax=axes[1], label='p-value')
 
 plt.tight_layout()

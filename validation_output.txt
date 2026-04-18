@@ -1,0 +1,63 @@
+Traceback (most recent call last):
+======================================================================
+VALIDATING MIROC6: MIROC6_UAE_Spatial_Input_1950_2014.csv
+  File "C:\Users\DEV DAHIYA\OneDrive\Desktop\Weather Projection\validate_datasets.py", line 214, in <module>
+======================================================================
+  [ OK ] File readable. Columns: ['Date', 'Lat', 'Lon', 'T_avg', 'PCP', 'AP', 'RH', 'WS']
+  [ OK ] All required columns present
+  Loading full file (this may take a moment)...
+  Total rows: 213,669
+  Date range: 1950-01-01 --> 2014-12-31
+  [ OK ] Every date has exactly 9 rows (consistent 3x3 grid)
+  Unique Lats (3): [np.float64(23.112655356577648), np.float64(24.513420897062915), np.float64(25.914186151846668)]
+  Unique Lons (3): [np.float64(52.03125), np.float64(53.4375), np.float64(54.84375)]
+  [ OK ] Grid dimensions match expected 3x3
+  [ OK ] 'T_avg' ù no NaN/Inf  (min=7.062, max=54.627)
+  [ OK ] 'PCP' ù no NaN/Inf  (min=0.000, max=160.862)
+  [ OK ] 'AP' ù no NaN/Inf  (min=982.487, max=1025.984)
+  [ OK ] 'RH' ù no NaN/Inf  (min=1.756, max=93.140)
+  [ OK ] 'WS' ù no NaN/Inf  (min=0.002, max=12.456)
+
+======================================================================
+VALIDATING ERA5: ERA5\UAE_ERA5_Spatial_Baseline_1950_2014.csv
+======================================================================
+  [ OK ] File readable. Columns: ['Date', 'Lat', 'Lon', 'T_avg', 'T_min', 'T_max', 'PCP', 'RH', 'AP', 'WS']
+  [ OK ] All required columns present
+  Loading full file (large ù may take a minute)...
+  Total rows: 6,852,190
+  Date range: 1950-01-01 --> 2014-12-31
+  [ OK ] Every date has exactly 289 rows (consistent 17x17 grid)
+  Unique Lats (17): [np.float64(22.0), np.float64(22.25), np.float64(22.5), np.float64(22.75), np.float64(23.0), np.float64(23.25), np.float64(23.5), np.float64(23.75), np.float64(24.0), np.float64(24.25), np.float64(24.5), np.float64(24.75), np.float64(25.0), np.float64(25.25), np.float64(25.5), np.float64(25.75), np.float64(26.0)]
+  Unique Lons (17): [np.float64(52.0), np.float64(52.25), np.float64(52.5), np.float64(52.75), np.float64(53.0), np.float64(53.25), np.float64(53.5), np.float64(53.75), np.float64(54.0), np.float64(54.25), np.float64(54.5), np.float64(54.75), np.float64(55.0), np.float64(55.25), np.float64(55.5), np.float64(55.75), np.float64(56.0)]
+  [ OK ] Grid dimensions match expected 17x17
+  [ OK ] 'T_avg' ù no NaN/Inf  (min=3.462, max=42.604)
+  [ OK ] 'PCP' ù no NaN/Inf  (min=0.000, max=178.822)
+  [ OK ] 'AP' ù no NaN/Inf  (min=931.728, max=1030.993)
+  [ OK ] 'RH' ù no NaN/Inf  (min=5.708, max=99.237)
+  [ OK ] 'WS' ù no NaN/Inf  (min=0.417, max=15.681)
+
+======================================================================
+CROSS-DATASET ALIGNMENT CHECK
+======================================================================
+  MIROC6 dates: 23,741
+  ERA5   dates: 23,710
+  Common dates: 23,710
+  [WARN] 31 dates in MIROC6 but NOT in ERA5 (first 5): [datetime.date(1999, 5, 1), datetime.date(1999, 5, 2), datetime.date(1999, 5, 3), datetime.date(1999, 5, 4), datetime.date(1999, 5, 5)]
+  [ OK ] Partial overlap: 23,710 usable training dates
+
+  Usable sliding-window sequences (seq_length=14): 23,697
+  [ OK ] Sufficient for training (23,697 sequences)
+
+======================================================================
+RESHAPE SMOKE TEST (data_loader compatibility)
+======================================================================
+  Testing reshape on date: 1950-01-01
+  [ OK ] MIROC6 reshaped to (3,3) for all features
+  [ OK ] ERA5 reshaped to (17,17) for all features
+
+======================================================================
+    print("RESULT: ALL CHECKS PASSED \u2713  ù Datasets are ready for training!")
+  File "C:\ProgramData\anaconda3\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\u2713' in position 26: character maps to <undefined>
