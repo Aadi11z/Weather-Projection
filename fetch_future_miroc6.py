@@ -36,7 +36,7 @@ if sys.version_info[0] == 3 and sys.version_info[1] >= 8 and sys.platform.starts
 # Uncomment/add the ones you need for your research papers
 SSP_SCENARIOS = [
     'ssp245',   # SSP2-4.5: Middle of the Road
-    'ssp585',   # SSP5-8.5: Fossil-Fueled (worst case)
+    # 'ssp585',   # SSP5-8.5: Fossil-Fueled (worst case)
     # 'ssp126', # SSP1-2.6: Sustainability (uncomment if needed)
     # 'ssp370', # SSP3-7.0: Regional Rivalry (uncomment if needed)
 ]
@@ -149,6 +149,6 @@ print(f"\n  Next step: Run  python project_future.py  to downscale these project
 # Clean up to prevent asyncio errors at exit
 try:
     import fsspec
-    fsspec.cache.clear()
-except Exception:
+    fsspec.clear_instance_cache()
+except Exception as e:
     pass  # Harmless cleanup — data is already saved
