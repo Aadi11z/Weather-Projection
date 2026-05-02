@@ -248,6 +248,44 @@ class ClimateTrendAnalyzer:
                   f"Z={mk_res['z_stat']:.3f}, p={mk_res['p_value']:.4f}, "
                   f"slope={mk_res['slope']:.5f}/yr  |  mutations={sqmk_res['significant_mutation_years']}")
 
+            # --- Pixel-by-pixel Spatial MK Heatmaps ---
+            z_grid, p_grid = self.analyze_spatial_grid(sub_cube)
+            fig, axes = plt.subplots(1, 2, figsize=(14, 5))
+            fig.suptitle(f'{gcm_name} {variable_name} TFPW-MK Trends ({label})', fontsize=14)
+            
+            lat_ticks = [0, 4, 8, 12, 16]
+            lat_labels = ['22.0°N', '23.0°N', '24.0°N', '25.0°N', '26.0°N']
+            lon_ticks = [0, 4, 8, 12, 16]
+            lon_labels = ['52.0°E', '53.0°E', '54.0°E', '55.0°E', '56.0°E']
+            
+            cmap_z = 'RdBu_r' if variable_name.lower() == 'temperature' else 'BrBG'
+            cbar_label = 'Z-stat (+ve = warming)' if variable_name.lower() == 'temperature' else 'Z-stat (+ve = wetting)'
+            
+            im1 = axes[0].imshow(z_grid, cmap=cmap_z, aspect='auto', origin='lower')
+            axes[0].set_title('Z-statistic (MK Test)')
+            axes[0].set_yticks(lat_ticks)
+            axes[0].set_yticklabels(lat_labels)
+            axes[0].set_xticks(lon_ticks)
+            axes[0].set_xticklabels(lon_labels)
+            axes[0].set_ylabel('Latitude')
+            axes[0].set_xlabel('Longitude')
+            plt.colorbar(im1, ax=axes[0], label=cbar_label)
+            
+            im2 = axes[1].imshow(p_grid, cmap='YlOrRd_r', aspect='auto', vmin=0, vmax=0.1, origin='lower')
+            axes[1].set_title('p-value (MK Test)')
+            axes[1].set_yticks(lat_ticks)
+            axes[1].set_yticklabels(lat_labels)
+            axes[1].set_xticks(lon_ticks)
+            axes[1].set_xticklabels(lon_labels)
+            axes[1].set_ylabel('Latitude')
+            axes[1].set_xlabel('Longitude')
+            plt.colorbar(im2, ax=axes[1], label='p-value')
+            
+            plt.tight_layout()
+            spatial_fname = f"spatial_mk_{gcm_name}_{variable_name.lower().replace(' ', '_')}_{label}.png"
+            plt.savefig(os.path.join(output_dir, spatial_fname), dpi=150)
+            plt.close(fig)
+
             results.append({
                 'period_label': label,
                 'years': sub_years,
@@ -258,14 +296,15 @@ class ClimateTrendAnalyzer:
         return results
 
     @staticmethod
-    def print_multi_gcm_comparison(all_results, variable_name):
+    def print_multi_gcm_comparison(all_results, variable_name, output_csv=None):
         """
-        Print a formatted cross-GCM comparison table to the console.
+        Print a formatted cross-GCM comparison table to the console, and optionally export to CSV.
 
         Args:
             all_results: dict  {gcm_name: list of period result dicts}
                          (as returned by run_wmo_period_analysis).
             variable_name: e.g. 'Temperature' — for the table header.
+            output_csv: Optional filepath to export the summary table.
         """
         print(f"\n{'=' * 85}")
         print(f"  CROSS-GCM WMO-PERIOD COMPARISON: {variable_name}")
@@ -285,6 +324,28 @@ class ClimateTrendAnalyzer:
                           f"{pr['sqmk_mutation_years']}")
 
         print(f"{'=' * 85}\n")
+        
+        if output_csv:
+            import csv
+            with open(output_csv, 'w', newline='') as f:
+                writer = csv.writer(f)
+                writer.writerow(['GCM', 'Period', 'Trend', 'Z', 'p', 'Slope_per_yr', 'Mutations'])
+                for gcm_name, period_results in all_results.items():
+                    for pr in period_results:
+                        mk = pr['mk_result']
+                        if mk is None:
+                            writer.writerow([gcm_name, pr['period_label'], 'N/A', 'N/A', 'N/A', 'N/A', 'N/A'])
+                        else:
+                            writer.writerow([
+                                gcm_name, 
+                                pr['period_label'], 
+                                mk['trend'], 
+                                round(mk['z_stat'], 3), 
+                                round(mk['p_value'], 4), 
+                                round(mk['slope'], 5), 
+                                str(pr['sqmk_mutation_years'])
+                            ])
+            print(f"  --> Saved summary table to {output_csv}")
 
 
 if __name__ == "__main__":

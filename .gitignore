@@ -8,4 +8,8 @@
 *.csv
 *.pyc
 *.npy
+*.tex
+*.pth
+*.md
+
 

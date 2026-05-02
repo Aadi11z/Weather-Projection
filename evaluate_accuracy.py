@@ -5,7 +5,7 @@ import seaborn as sns
 import os
 
 print("======================================================")
-print("  EVALUATING MODEL ACCURACY: DOWNSCALER vs ERA5 BASELINE")
+print("EVALUATING MODEL ACCURACY: DOWNSCALER vs ERA5 BASELINE")
 print("======================================================")
 
 # Ensure evaluation directory exists
@@ -28,10 +28,10 @@ df_miroc = pd.read_csv(miroc_csv, usecols=['Date', 'Lat', 'Lon'])
 df_miroc['Date'] = pd.to_datetime(df_miroc['Date']).dt.date
 miroc_dates = sorted(df_miroc['Date'].unique())
 
-# Since SEQ_LENGTH = 14, the first predicted output is index 13
+# SEQ_LENGTH = 14, the first predicted output is index 13
 prediction_dates = miroc_dates[13:]
 
-# Find intersection of dates (2015-2025 overlapping window)
+# Intersection of dates (2015-2025 overlapping window)
 valid_dates = sorted(list(set(era5_dates).intersection(set(prediction_dates))))
 print(f"  Found {len(valid_dates)} exact matching days between 2015 and 2025.")
 
